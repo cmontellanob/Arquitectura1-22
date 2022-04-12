@@ -6,13 +6,6 @@ package com.carlosmontellano.sipleresponsabilidad.correcto;
 
 import com.carlosmontellano.sipleresponsabilidad.comun.Marca;
 import com.carlosmontellano.sipleresponsabilidad.comun.TipoVehiculo;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement; 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -72,49 +65,6 @@ public class Vehiculo {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public Connection conexion() {
-        Connection con = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_vehiculos", "root", "");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return con;
-    }
-
-    public Boolean GuardarBD(Vehiculo vehiculo) {
-
-        return true;
-    }
-
-    public Boolean EliminarBD(Vehiculo vehiculo) {
-
-        return true;
-    }
-
-    public Vehiculo LeerBD(String placa) {
-        Statement stmt;
-        try {
-            stmt = conexion().createStatement();
-            ResultSet rs = stmt.executeQuery("select id,marca,modelo,placa,tipovehiculo,color from vehiculos where numeroplaca=" + placa);
-            if (rs.next()) {
-                this.marca = Marca.valueOf(rs.getString(2));
-                this.modelo = rs.getString(3);
-                this.placa = rs.getString(4);
-                this.tipovehiculo = TipoVehiculo.valueOf(rs.getString(5));
-                this.color = rs.getString(6);
-                return this;
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
     }
 
 }
