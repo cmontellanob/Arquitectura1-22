@@ -9,9 +9,18 @@ package com.carlosmontellano.sipleresponsabilidad;
  *
  * @author Carlos
  */
+import com.carlosmontellano.sipleresponsabilidad.comun.Marca;
+import com.carlosmontellano.sipleresponsabilidad.comun.TipoVehiculo;
+import com.carlosmontellano.sipleresponsabilidad.incorrecto.Vehiculo;
+
 public class Sipleresponsabilidad {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        
+        Vehiculo vehiculo=new Vehiculo(Marca.TOYOTA,"RAV4","5789 TCP",TipoVehiculo.Auto,"Rojo");
+      //  vehiculo.GuardarBD(vehiculo);
+        
+        System.out.println(vehiculo.LeerBD("5789 TCP"));
+        
     }
 }

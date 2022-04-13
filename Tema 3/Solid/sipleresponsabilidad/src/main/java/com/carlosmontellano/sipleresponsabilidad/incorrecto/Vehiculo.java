@@ -8,9 +8,10 @@ import com.carlosmontellano.sipleresponsabilidad.comun.Marca;
 import com.carlosmontellano.sipleresponsabilidad.comun.TipoVehiculo;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement; 
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,7 +78,7 @@ public class Vehiculo {
     public Connection conexion() {
         Connection con = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_vehiculos", "root", "");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,19 +91,47 @@ public class Vehiculo {
 
     public Boolean GuardarBD(Vehiculo vehiculo) {
 
-        return true;
+        try {
+            
+            String sql = " insert into vehiculos (marca, modelo,placa,tipovehiculo,color) values (?, ?, ?, ?, ?)";
+            PreparedStatement preparedStmt = conexion().prepareStatement(sql);
+            preparedStmt.setString(1, vehiculo.getMarca().toString());
+            preparedStmt.setString(2, vehiculo.getModelo());
+            preparedStmt.setString(3, vehiculo.getPlaca());
+            preparedStmt.setString(4, vehiculo.getTipovehiculo().toString());
+            preparedStmt.setString(5, vehiculo.getColor());
+
+            return preparedStmt.execute();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
-    public Boolean EliminarBD(Vehiculo vehiculo) {
+    public Boolean EliminarBD(String  placa) {
 
-        return true;
+        try {
+            
+            String sql = " delete from vehiculos where placa=?";
+            PreparedStatement preparedStmt = conexion().prepareStatement(sql);
+            preparedStmt.setString(1, placa);
+            
+            return preparedStmt.execute();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public Vehiculo LeerBD(String placa) {
         Statement stmt;
         try {
             stmt = conexion().createStatement();
-            ResultSet rs = stmt.executeQuery("select id,marca,modelo,placa,tipovehiculo,color from vehiculos where numeroplaca=" + placa);
+            String sql="select id,marca,modelo,placa,tipovehiculo,color from vehiculos where placa='" + placa+"'";
+            
+            ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
                 this.marca = Marca.valueOf(rs.getString(2));
                 this.modelo = rs.getString(3);
@@ -116,5 +145,11 @@ public class Vehiculo {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "Vehiculo{" + "marca=" + marca + ", modelo=" + modelo + ", placa=" + placa + ", tipovehiculo=" + tipovehiculo + ", color=" + color + '}';
+    }
+    
 
 }
